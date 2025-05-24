@@ -9,7 +9,8 @@ terraform {
 
 # Configure the AWS Provider
 provider "aws" {
-  region = "us-east-1"
+  region = "us-west-2"
+  s3_use_path_style = true
 }
 
 
@@ -20,7 +21,7 @@ module "vpc" {
   name = "main-vpc"
   cidr = "10.0.0.0/16"
 
-  azs             = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  azs             = ["us-west-2a", "us-west-2b", "us-west-2c"]
   private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
   public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
 
@@ -80,10 +81,6 @@ resource "aws_s3_bucket" "backup_bucket" {
   }
 }
 
-
-
-
-
 #Disable Public Access Policies
 resource "aws_s3_bucket_public_access_block" "public_bucket_block" {
   bucket = aws_s3_bucket.backup_bucket.id
@@ -121,11 +118,8 @@ resource "aws_iam_policy" "backup_policy" {
     Statement = [
       {
         Effect = "Allow",
-        Action = ["s3:PutObject", "s3:GetObject", "s3:ListBucket"],
-        Resource = [
-          aws_s3_bucket.backup_bucket.arn,
-          "${aws_s3_bucket.backup_bucket.arn}/*"
-        ]
+        Action = ["s3:*"],
+        Resource = ["*"]
       },
       {
         Action   = "ec2:*",
@@ -168,8 +162,8 @@ resource "aws_iam_instance_profile" "ec2_backup_profile" {
 
 #Database EC2 Instance
 resource "aws_instance" "mongodb_instance" {
-  ami                         = "ami-03c951bbe993ea087" # Ubuntu 20.04 LTS
-  
+  ami                         = "ami-066a7fbea5161f451" # Amazon Linux
+  #ami-03c951bbe993ea087
   instance_type               = "t2.micro"
   key_name                    = aws_key_pair.ssh_keypair.key_name
   subnet_id                   = module.vpc.public_subnets[0]
@@ -232,6 +226,10 @@ resource "aws_instance" "mongodb_instance" {
               echo '31 00 * * * root /s3_sync_script.sh' | sudo tee -a /etc/crontab
               sudo systemctl restart crond
 
+              DD_API_KEY=${var.ddkey} 
+              DD_SITE="us3.datadoghq.com" 
+              bash -c "$(curl -L https://install.datadoghq.com/scripts/install_script_agent7.sh)"
+
 
               EOF
   tags = {
@@ -240,7 +238,6 @@ resource "aws_instance" "mongodb_instance" {
   }
 }
 
-/*
 
 resource "aws_security_group" "k8s_access_sg" {
   vpc_id = module.vpc.vpc_id
@@ -435,5 +432,3 @@ resource "kubernetes_service" "tasky_svc" {
     type             = "LoadBalancer"
   }
 }
-
-*/

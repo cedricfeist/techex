@@ -3,3 +3,6 @@ variable "publickey" {
     default = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID9oFdUuY6GKkj0aihaxauGdC7y/r7cI6/f0LobDujBT cfeist"
   
 }
+variable "ddkey" {
+  type = string
+}
