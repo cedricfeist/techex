@@ -358,7 +358,7 @@ resource "kubernetes_cluster_role_binding" "admin_sa_binding" {
 
 #Create Deployment for App
 resource "kubernetes_deployment" "tasky_deployment" {
-  depends_on = [module.eks, mongodb_instance]
+  depends_on = [module.eks, aws_instance.mongodb_instance]
   metadata {
     name      = "tasky"
     namespace = kubernetes_namespace.tasky_namespace.metadata[0].name
