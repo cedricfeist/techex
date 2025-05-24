@@ -226,9 +226,7 @@ resource "aws_instance" "mongodb_instance" {
               echo '31 00 * * * root /s3_sync_script.sh' | sudo tee -a /etc/crontab
               sudo systemctl restart crond
 
-              export DD_API_KEY="${var.ddkey}"
-              export DD_SITE="us3.datadoghq.com"
-              bash -c "$(curl -L https://install.datadoghq.com/scripts/install_script_agent7.sh)"
+              sudo DD_API_KEY=${var.ddkey} DD_SITE="us3.datadoghq.com" bash -c "$(curl -L https://install.datadoghq.com/scripts/install_script_agent7.sh)"
 
 
               EOF
@@ -360,7 +358,7 @@ resource "kubernetes_cluster_role_binding" "admin_sa_binding" {
 
 #Create Deployment for App
 resource "kubernetes_deployment" "tasky_deployment" {
-  depends_on = [module.eks]
+  depends_on = [module.eks, mongodb_instance]
   metadata {
     name      = "tasky"
     namespace = kubernetes_namespace.tasky_namespace.metadata[0].name
