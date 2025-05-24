@@ -164,7 +164,7 @@ resource "aws_iam_instance_profile" "ec2_backup_profile" {
 resource "aws_instance" "mongodb_instance" {
   ami                         = "ami-066a7fbea5161f451" # Amazon Linux
   #ami-03c951bbe993ea087
-  instance_type               = "t2.small"
+  instance_type               = "t2.micro"
   key_name                    = aws_key_pair.ssh_keypair.key_name
   subnet_id                   = module.vpc.public_subnets[0]
   vpc_security_group_ids      = [aws_security_group.main_vpc_sg.id]
@@ -226,7 +226,9 @@ resource "aws_instance" "mongodb_instance" {
               echo '31 00 * * * root /s3_sync_script.sh' | sudo tee -a /etc/crontab
               sudo systemctl restart crond
 
-              DD_API_KEY=${var.ddkey} \ DD_SITE="us3.datadoghq.com" \ bash -c "$(curl -L https://install.datadoghq.com/scripts/install_script_agent7.sh)"
+              export DD_API_KEY="${var.ddkey}"
+              export DD_SITE="us3.datadoghq.com"
+              bash -c "$(curl -L https://install.datadoghq.com/scripts/install_script_agent7.sh)"
 
 
               EOF
