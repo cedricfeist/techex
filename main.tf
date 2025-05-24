@@ -354,8 +354,6 @@ resource "kubernetes_cluster_role_binding" "admin_sa_binding" {
   }
 }
 
-#docker buildx build --platform linux/amd64 -t cedricfe/tasky:latest --push .
-
 #Create Deployment for App
 resource "kubernetes_deployment" "tasky_deployment" {
   depends_on = [module.eks, aws_instance.mongodb_instance]
@@ -396,7 +394,7 @@ resource "kubernetes_deployment" "tasky_deployment" {
 
           env {
             name  = "SECRET_KEY"
-            value = "secret123"
+            value = "secret1234"
           }
         }
       }
