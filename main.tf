@@ -30,131 +30,6 @@ module "vpc" {
 
 }
 
-/*
-# Create a VPC
-resource "aws_vpc" "main" {
-  cidr_block           = "10.0.0.0/16"
-  enable_dns_support   = true
-  enable_dns_hostnames = true
-
-  tags = {
-    Name = "main_vpc_old"
-  }
-}
-
-#Public Subnet
-resource "aws_subnet" "public" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.0.1.0/24"
-  map_public_ip_on_launch = true
-  availability_zone       = "eu-central-1b"
-
-  tags = {
-    Name                                      = "Public"
-    "kubernetes.io/role/elb"                  = "1"
-    "kubernetes.io/cluster/tasky_eks_cluster" = "owned"
-  }
-}
-
-#Public Subnet
-resource "aws_subnet" "public2" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.0.2.0/24"
-  map_public_ip_on_launch = true
-  availability_zone       = "eu-central-1c"
-
-  tags = {
-    Name                                      = "Public2"
-    "kubernetes.io/role/elb"                  = "1"
-    "kubernetes.io/cluster/tasky_eks_cluster" = "owned"
-  }
-}
-
-
-#Private Subnet1
-resource "aws_subnet" "private" {
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.10.0/24"
-  availability_zone = "eu-central-1b"
-
-  tags = {
-    Name = "Private"
-
-    "kubernetes.io/role/internal-elb" = "1"
-
-  }
-}
-#Private Subnet2
-resource "aws_subnet" "private2" {
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.11.0/24"
-  availability_zone = "eu-central-1c"
-
-  tags = {
-    Name                              = "Private2"
-    "kubernetes.io/role/internal-elb" = "1"
-
-  }
-}
-
-resource "aws_eip" "nat_eip" {
-
-  tags = {
-    name = "nat-eip"
-  }
-}
-
-resource "aws_nat_gateway" "private_nat_gateway" {
-  allocation_id = aws_eip.nat_eip.id
-  subnet_id     = aws_subnet.public.id
-  tags = {
-    Name = "Private_NAT_Gateway"
-  }
-}
-
-resource "aws_route_table" "private_default" {
-  vpc_id = aws_vpc.main.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_nat_gateway.private_nat_gateway.id
-  }
-}
-
-resource "aws_route_table_association" "private_nat_association" {
-  subnet_id      = aws_subnet.private.id
-  route_table_id = aws_route_table.private_default.id
-}
-
-resource "aws_route_table_association" "private2_nat_association" {
-  subnet_id      = aws_subnet.private2.id
-  route_table_id = aws_route_table.private_default.id
-}
-
-resource "aws_internet_gateway" "my_igw" {
-  vpc_id = aws_vpc.main.id
-
-  tags = {
-    Name = "main_igw"
-  }
-}
-
-# Route Table
-resource "aws_route_table" "my_route_table" {
-  vpc_id = aws_vpc.main.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.my_igw.id
-  }
-}
-
-# Associate the route table with the subnet
-resource "aws_route_table_association" "my_subnet_association" {
-  subnet_id      = aws_subnet.public.id
-  route_table_id = aws_route_table.my_route_table.id
-}
-*/
 
 #Security Group main VPC for SSH + MongoDB
 resource "aws_security_group" "main_vpc_sg" {
@@ -187,36 +62,6 @@ resource "aws_security_group" "main_vpc_sg" {
   }
 }
 
-/*
-resource "aws_network_acl" "public_acl" {
-  vpc_id     = aws_vpc.main.id
-  subnet_ids = [aws_subnet.public.id]
-}
-
-
-resource "aws_network_acl_rule" "mongo_db_access_acl" {
-  network_acl_id = aws_network_acl.public_acl.id
-
-  rule_number = 200
-  egress      = false
-  protocol    = "tcp"
-  rule_action = "allow"
-  cidr_block  = "10.0.10.0/24"
-  from_port   = 27017
-  to_port     = 27017
-}
-resource "aws_network_acl_rule" "mongo_db_ssh_acl" {
-  network_acl_id = aws_network_acl.public_acl.id
-
-  rule_number = 201
-  egress      = false
-  protocol    = "tcp"
-  rule_action = "allow"
-  cidr_block  = "0.0.0.0/0"
-  from_port   = 22
-  to_port     = 22
-}
-*/
 
 
 #Use Public Key
@@ -234,6 +79,10 @@ resource "aws_s3_bucket" "backup_bucket" {
     Name = "BackupBucket"
   }
 }
+
+
+
+
 
 #Disable Public Access Policies
 resource "aws_s3_bucket_public_access_block" "public_bucket_block" {
@@ -390,6 +239,8 @@ resource "aws_instance" "mongodb_instance" {
 
   }
 }
+
+/*
 
 resource "aws_security_group" "k8s_access_sg" {
   vpc_id = module.vpc.vpc_id
@@ -585,3 +436,4 @@ resource "kubernetes_service" "tasky_svc" {
   }
 }
 
+*/
