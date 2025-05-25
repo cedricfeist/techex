@@ -240,6 +240,8 @@ resource "aws_instance" "mongodb_instance" {
   }
 }
 
+/*
+
 resource "aws_security_group" "k8s_access_sg" {
   vpc_id = module.vpc.vpc_id
   name   = "K8s_access_sg"
@@ -431,35 +433,4 @@ resource "kubernetes_service" "tasky_svc" {
     type             = "LoadBalancer"
   }
 }
-
-provider "helm" {
-  kubernetes {
-    host                   = module.eks.cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-    exec {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      args        = ["eks", "get-token", "--cluster-name", "tasky_eks_cluster"]
-      command     = "aws"
-    }
-  }
-
-}
-
-resource "kubernetes_secret" "ddapi" {
-  metadata {
-    name = "datadog-secret"
-    namespace = "default"
-  }
-  data = {
-    api-key = "${var.ddkey}"
-  }
-  type = "Opaque"
-  
-}
-
-resource "helm_release" "datadog_operator" {
-  name       = "datadog-operator"
-  repository = "https://helm.datadoghq.com"
-  chart      = "datadog-operator"
-  namespace  = "default" 
-}
+*/
