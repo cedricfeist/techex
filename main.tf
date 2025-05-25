@@ -31,13 +31,6 @@ module "vpc" {
 
 }
 
-module "aws_config" {
-    source = "trussworks/config/aws"
-
-  config_name        = "my-aws-config"
-  config_logs_bucket = "config-logs-bucket-cfeist"
-}
-
 
 #Security Group main VPC for SSH + MongoDB
 resource "aws_security_group" "main_vpc_sg" {
