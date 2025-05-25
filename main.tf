@@ -9,7 +9,7 @@ terraform {
 
 # Configure the AWS Provider
 provider "aws" {
-  region = "us-west-2"
+  region            = "us-west-2"
   s3_use_path_style = true
 }
 
@@ -31,8 +31,8 @@ module "vpc" {
 }
 
 module "guardDuty" {
-  source = "github.com/cloudposse/terraform-aws-guardduty"
-  create_sns_topic = false
+  source                = "github.com/cloudposse/terraform-aws-guardduty"
+  create_sns_topic      = false
   s3_protection_enabled = true
 }
 
@@ -71,8 +71,8 @@ resource "aws_security_group" "main_vpc_sg" {
 
 #Use Public Key
 resource "aws_key_pair" "ssh_keypair" {
-  key_name   = "cfeist-keypair"              # Replace with your desired key pair name
-  public_key = var.publickey # Replace with the path to your public key file
+  key_name   = "cfeist-keypair" # Replace with your desired key pair name
+  public_key = var.publickey    # Replace with the path to your public key file
 }
 
 #Create Backup S3 Bucket
@@ -121,8 +121,8 @@ resource "aws_iam_policy" "backup_policy" {
     Version = "2012-10-17",
     Statement = [
       {
-        Effect = "Allow",
-        Action = ["s3:*"],
+        Effect   = "Allow",
+        Action   = ["s3:*"],
         Resource = ["*"]
       },
       {
@@ -166,7 +166,7 @@ resource "aws_iam_instance_profile" "ec2_backup_profile" {
 
 #Database EC2 Instance
 resource "aws_instance" "mongodb_instance" {
-  ami                         = "ami-066a7fbea5161f451" # Amazon Linux
+  ami = "ami-066a7fbea5161f451" # Amazon Linux
   #ami-03c951bbe993ea087
   instance_type               = "t2.micro"
   key_name                    = aws_key_pair.ssh_keypair.key_name
@@ -430,4 +430,37 @@ resource "kubernetes_service" "tasky_svc" {
     load_balancer_ip = null
     type             = "LoadBalancer"
   }
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = module.eks.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+    token                  = aws_eks_cluster_auth.cluster.token
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      args        = ["eks", "get-token", "--cluster-name", "tasky_eks_cluster"]
+      command     = "aws"
+    }
+  }
+
+}
+
+resource "kubernetes_secret" "ddapi" {
+  metadata {
+    name = "datadog-secret"
+    namespace = "default"
+  }
+  data = {
+    api-key = "${var.ddkey}"
+  }
+  type = "Opaque"
+  
+}
+
+resource "helm_release" "datadog_operator" {
+  name       = "datadog-operator"
+  repository = "https://helm.datadoghq.com"
+  chart      = "datadog-operator"
+  namespace  = "default" 
 }
