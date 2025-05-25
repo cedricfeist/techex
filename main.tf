@@ -34,6 +34,7 @@ module "vpc" {
 module "guardDuty" {
   source = "github.com/cloudposse/terraform-aws-guardduty"
   create_sns_topic = false
+  s3_protection_enabled = true
 }
 
 #Security Group main VPC for SSH + MongoDB
