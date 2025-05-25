@@ -31,6 +31,10 @@ module "vpc" {
 
 }
 
+module "guardDuty" {
+  source = "https://github.com/cloudposse/terraform-aws-guardduty.git?ref=master"
+  create_sns_topic = false
+}
 
 #Security Group main VPC for SSH + MongoDB
 resource "aws_security_group" "main_vpc_sg" {
