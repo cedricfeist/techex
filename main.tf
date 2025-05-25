@@ -32,7 +32,7 @@ module "vpc" {
 }
 
 module "guardDuty" {
-  source = "https://github.com/cloudposse/terraform-aws-guardduty.git?ref=master"
+  source = "cloudposse/terraform-aws-guardduty"
   create_sns_topic = false
 }
 
