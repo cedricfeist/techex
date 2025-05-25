@@ -13,7 +13,6 @@ provider "aws" {
   s3_use_path_style = true
 }
 
-
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = ">=3.0.0"
