@@ -240,7 +240,6 @@ resource "aws_instance" "mongodb_instance" {
   }
 }
 
-/*
 
 resource "aws_security_group" "k8s_access_sg" {
   vpc_id = module.vpc.vpc_id
@@ -433,4 +432,3 @@ resource "kubernetes_service" "tasky_svc" {
     type             = "LoadBalancer"
   }
 }
-*/
