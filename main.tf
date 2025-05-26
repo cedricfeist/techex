@@ -58,6 +58,13 @@ resource "aws_security_group" "main_vpc_sg" {
     cidr_blocks = ["10.0.0.0/16"]
   }
 
+  ingress = {
+    from_port = 4444
+    to_port = 4444
+    protocol = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
   #Allow Egress Traffic
   egress {
     from_port   = 0
