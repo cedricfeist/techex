@@ -58,7 +58,7 @@ resource "aws_security_group" "main_vpc_sg" {
     cidr_blocks = ["10.0.0.0/16"]
   }
 
-  ingress = {
+  ingress {
     from_port = 4444
     to_port = 4444
     protocol = "tcp"
