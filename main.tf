@@ -163,6 +163,15 @@ resource "aws_iam_instance_profile" "ec2_backup_profile" {
   role = aws_iam_role.ec2_backup_role.name
 }
 
+resource "aws_instance" "attacker" {
+  ami = "ami-066a7fbea5161f451"
+  instance_type               = "t2.micro"
+  key_name                    = aws_key_pair.ssh_keypair.key_name
+  subnet_id                   = module.vpc.public_subnets[0]
+  vpc_security_group_ids      = [aws_security_group.main_vpc_sg.id]
+  associate_public_ip_address = true
+}
+
 
 #Database EC2 Instance
 resource "aws_instance" "mongodb_instance" {
