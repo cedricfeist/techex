@@ -60,9 +60,9 @@ resource "aws_security_group" "main_vpc_sg" {
 
   #Allow Attack
   ingress {
-    from_port = 4444
-    to_port = 4444
-    protocol = "tcp"
+    from_port   = 4444
+    to_port     = 4444
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -172,12 +172,22 @@ resource "aws_iam_instance_profile" "ec2_backup_profile" {
 }
 
 resource "aws_instance" "attacker" {
-  ami = "ami-066a7fbea5161f451"
+  ami                         = "ami-066a7fbea5161f451"
   instance_type               = "t2.micro"
   key_name                    = aws_key_pair.ssh_keypair.key_name
   subnet_id                   = module.vpc.public_subnets[0]
   vpc_security_group_ids      = [aws_security_group.main_vpc_sg.id]
   associate_public_ip_address = true
+
+  user_data = <<-EOF
+              #!/bin/bash
+              #Install nc for listener
+              sudo yum install nc -y
+
+              EOF
+  tags = {
+    Name = "attacker_instance"
+  }
 }
 
 
@@ -249,11 +259,9 @@ resource "aws_instance" "mongodb_instance" {
 
               sudo DD_API_KEY=${var.ddkey} DD_SITE="us3.datadoghq.com" bash -c "$(curl -L https://install.datadoghq.com/scripts/install_script_agent7.sh)"
 
-
               EOF
   tags = {
     Name = "mongodb_instance"
-
   }
 }
 
