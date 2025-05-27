@@ -442,7 +442,6 @@ resource "kubernetes_service" "tasky_svc" {
       "service.beta.kubernetes.io/aws-load-balancer-subnets"         = "${module.vpc.public_subnets[0]}, ${module.vpc.public_subnets[1]},${module.vpc.public_subnets[2]}"
       "service.beta.kubernetes.io/aws-load-balancer-security-groups" = aws_security_group.k8s_access_sg.id
       "service.beta.kubernetes.io/aws-load-balancer-scheme"          = "internet-facing"
-      #"service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "instance"
     }
   }
   spec {
