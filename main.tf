@@ -206,13 +206,13 @@ resource "aws_instance" "mongodb_instance" {
   user_data = <<-EOF
               #!/bin/bash
               #Prep Mongodb Yum
-              sudo touch /etc/yum.repos.d/mongodb-org-8.0.repo
-              echo '[mongodb-org-8.0]' | sudo tee /etc/yum.repos.d/mongodb-org-8.0.repo
-              echo 'name=MongoDB Repository' | sudo tee -a /etc/yum.repos.d/mongodb-org-8.0.repo
-              echo 'baseurl=https://repo.mongodb.org/yum/amazon/2023/mongodb-org/8.0/x86_64/' | sudo tee -a /etc/yum.repos.d/mongodb-org-8.0.repo
-              echo 'gpgcheck=1' | sudo tee -a /etc/yum.repos.d/mongodb-org-8.0.repo
-              echo 'enabled=1' | sudo tee -a /etc/yum.repos.d/mongodb-org-8.0.repo
-              echo 'gpgkey=https://pgp.mongodb.com/server-8.0.asc' | sudo tee -a /etc/yum.repos.d/mongodb-org-8.0.repo
+              sudo touch /etc/yum.repos.d/mongodb-org-7.0.repo
+              echo '[mongodb-org-7.0]' | sudo tee /etc/yum.repos.d/mongodb-org-7.0.repo
+              echo 'name=MongoDB Repository' | sudo tee -a /etc/yum.repos.d/mongodb-org-7.0.repo
+              echo 'baseurl=https://repo.mongodb.org/yum/amazon/2023/mongodb-org/7.0/x86_64/' | sudo tee -a /etc/yum.repos.d/mongodb-org-7.0.repo
+              echo 'gpgcheck=1' | sudo tee -a /etc/yum.repos.d/mongodb-org-7.0.repo
+              echo 'enabled=1' | sudo tee -a /etc/yum.repos.d/mongodb-org-7.0.repo
+              echo 'gpgkey=https://pgp.mongodb.com/server-7.0.asc' | sudo tee -a /etc/yum.repos.d/mongodb-org-7.0.repo
 
               #Install Mongodb
               sudo yum install -y mongodb-mongosh-shared-openssl3
@@ -265,7 +265,7 @@ resource "aws_instance" "mongodb_instance" {
   }
 }
 
-
+/*
 resource "aws_security_group" "k8s_access_sg" {
   vpc_id = module.vpc.vpc_id
   name   = "K8s_access_sg"
@@ -456,3 +456,4 @@ resource "kubernetes_service" "tasky_svc" {
     type             = "LoadBalancer"
   }
 }
+*/
