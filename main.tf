@@ -64,7 +64,7 @@ resource "aws_security_group" "main_vpc_sg" {
     from_port   = 4444
     to_port     = 4444
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["10.0.0.0/16"]
   }
 
   #Allow Egress Traffic
