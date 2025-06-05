@@ -258,7 +258,9 @@ resource "aws_instance" "mongodb_instance" {
               echo '31 00 * * * root /s3_sync_script.sh' | sudo tee -a /etc/crontab
               sudo systemctl restart crond
 
-              sudo DD_API_KEY=${var.ddkey} DD_SITE="us3.datadoghq.com" bash -c "$(curl -L https://install.datadoghq.com/scripts/install_script_agent7.sh)"
+              sudo DD_API_KEY=${var.ddkey} DD_SITE="us3.datadoghq.com" DD_RUNTIME_SECURITY_CONFIG_ENABLED=true DD_SBOM_HOST_ENABLED=true bash -c "$(curl -L https://install.datadoghq.com/scripts/install_script_agent7.sh)"
+
+              sudo touch 
 
               EOF
   tags = {
