@@ -425,7 +425,7 @@ resource "kubernetes_deployment" "tasky_deployment" {
 
           env {
             name  = "SECRET_KEY"
-            value = "secret1234"
+            value = "secret123"
           }
         }
       }
