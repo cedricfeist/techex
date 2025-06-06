@@ -195,7 +195,6 @@ resource "aws_instance" "attacker" {
 #Database EC2 Instance
 resource "aws_instance" "mongodb_instance" {
   ami = "ami-066a7fbea5161f451" # Amazon Linux
-  #ami-03c951bbe993ea087
   instance_type               = "t2.micro"
   key_name                    = aws_key_pair.ssh_keypair.key_name
   subnet_id                   = module.vpc.public_subnets[0]
