@@ -55,7 +55,6 @@ resource "aws_security_group" "main_vpc_sg" {
     from_port   = 27017
     to_port     = 27017
     protocol    = "tcp"
-    #security_groups = [module.eks.cluster_primary_security_group_id]
     cidr_blocks = module.vpc.private_subnets_cidr_blocks
   }
 
